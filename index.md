@@ -1,6 +1,7 @@
 ---
-# Feel free to add content and custom Front Matter to this file.
-# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-
-layout: home
+layout: frontpage
 ---
+
+## 欢迎来到慎见慎思
+
+收集下个人的所见所闻,所思所感,以备老了的时候还能扯淡.

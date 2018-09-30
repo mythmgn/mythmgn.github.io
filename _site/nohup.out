@@ -1,0 +1,184 @@
+Configuration file: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_config.yml
+            Source: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io
+       Destination: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    done in 0.378 seconds.
+ Auto-regeneration: enabled for '/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io'
+    Server address: http://127.0.0.1:4000/
+  Server running... press ctrl-c to stop.
+[2018-09-30 17:22:11] ERROR `/categories/' not found.
+      Regenerating: 2 file(s) changed at 2018-09-30 17:22:35
+                    nohup.out
+                    bio.md
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.191385 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:25:50
+                    _layouts/post.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.257803 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:26:47
+                    _layouts/frontpage.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.210892 seconds.
+
+E, [2018-09-30T17:29:12.575848 #77354] ERROR -- : fsevent: running worker failed: incompatible character encodings: ASCII-8BIT and UTF-8:/Users/baidu/.rvm/rubies/ruby-2.4.1/lib/ruby/2.4.0/pathname.rb:445:in `join'
+/Users/baidu/.rvm/rubies/ruby-2.4.1/lib/ruby/2.4.0/pathname.rb:445:in `block in children'
+/Users/baidu/.rvm/rubies/ruby-2.4.1/lib/ruby/2.4.0/pathname.rb:442:in `foreach'
+/Users/baidu/.rvm/rubies/ruby-2.4.1/lib/ruby/2.4.0/pathname.rb:442:in `children'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/directory.rb:77:in `_children'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/directory.rb:15:in `scan'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/change.rb:55:in `invalidate'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/base.rb:114:in `_queue_change'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:65:in `block in _process_event'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:60:in `each'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:60:in `_process_event'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/base.rb:42:in `block (2 levels) in configure'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/rb-fsevent-0.10.3/lib/rb-fsevent/fsevent.rb:77:in `run'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:71:in `_run_worker'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:55:in `_run'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/base.rb:78:in `block in start'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/internals/thread_pool.rb:6:in `block in add' called from: /Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:70:in `_run_worker'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/darwin.rb:55:in `_run'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/adapter/base.rb:78:in `block in start'
+/Users/baidu/.rvm/gems/ruby-2.4.1/gems/listen-3.1.5/lib/listen/internals/thread_pool.rb:6:in `block in add'
+[2018-09-30 17:29:28] ERROR `/慎见慎思/大国宪制/_posts/慎见慎思/2018-09-10-大国宪制.markdown' not found.
+Configuration file: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_config.yml
+            Source: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io
+       Destination: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    done in 0.342 seconds.
+ Auto-regeneration: enabled for '/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io'
+    Server address: http://127.0.0.1:4000/
+  Server running... press ctrl-c to stop.
+      Regenerating: 1 file(s) changed at 2018-09-30 17:33:09
+                    _includes/footer.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.203505 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:33:48
+                    nohup.out
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.17863 seconds.
+
+Configuration file: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_config.yml
+            Source: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io
+       Destination: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    done in 0.368 seconds.
+ Auto-regeneration: enabled for '/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io'
+    Server address: http://127.0.0.1:4000/
+  Server running... press ctrl-c to stop.
+[2018-09-30 17:34:46] ERROR `/static/css/bootstrap.min.css.map' not found.
+      Regenerating: 1 file(s) changed at 2018-09-30 17:35:39
+                    _includes/footer.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.264963 seconds.
+
+Configuration file: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_config.yml
+            Source: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io
+       Destination: /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    done in 0.311 seconds.
+ Auto-regeneration: enabled for '/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io'
+    Server address: http://127.0.0.1:4000/
+  Server running... press ctrl-c to stop.
+      Regenerating: 13 file(s) changed at 2018-09-30 17:36:32
+                    nohup.out
+                    _includes.bak/duplicate.html
+                    _includes.bak/newpost.html
+                    _includes.bak/head.html
+                    _includes.bak/comments.html
+                    _includes.bak/footer.html
+                    _includes.bak/header.html
+                    _includes/duplicate.html
+                    _includes/newpost.html
+                    _includes/head.html
+                    _includes/comments.html
+                    _includes/footer.html
+                    _includes/header.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+[31m  Liquid Exception: Could not locate the included file 'comments.html' in any of ["/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_includes", "/Users/baidu/.rvm/gems/ruby-2.4.1/gems/minima-2.5.0/_includes"]. Ensure it exists in one of those directories and is not a symlink as those are not allowed in safe mode. in /_layouts/post.html[0m
+[33m             Error: Could not locate the included file 'comments.html' in any of ["/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_includes", "/Users/baidu/.rvm/gems/ruby-2.4.1/gems/minima-2.5.0/_includes"]. Ensure it exists in one of those directories and is not a symlink as those are not allowed in safe mode.[0m
+[33m             Error: Run jekyll build --trace for more information.[0m
+
+      Regenerating: 7 file(s) changed at 2018-09-30 17:36:44
+                    nohup.out
+                    _includes/duplicate.html
+                    _includes/newpost.html
+                    _includes/head.html
+                    _includes/comments.html
+                    _includes/footer.html
+                    _includes/header.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.197055 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:44:18
+                    _layouts/default.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.21424 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:44:22
+                    _layouts/default.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.210347 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:44:59
+                    _layouts/default.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.1912 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:45:13
+                    _layouts/default.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.177028 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:45:29
+                    _layouts/default.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.189578 seconds.
+
+      Regenerating: 1 file(s) changed at 2018-09-30 17:45:32
+                    _layouts/default.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.205097 seconds.
+
+      Regenerating: 7 file(s) changed at 2018-09-30 17:45:44
+                    nohup.out
+                    _includes/duplicate.html
+                    _includes/newpost.html
+                    _includes/head.html
+                    _includes/comments.html
+                    _includes/footer.html
+                    _includes/header.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+[31m  Liquid Exception: Could not locate the included file 'comments.html' in any of ["/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_includes", "/Users/baidu/.rvm/gems/ruby-2.4.1/gems/minima-2.5.0/_includes"]. Ensure it exists in one of those directories and is not a symlink as those are not allowed in safe mode. in /_layouts/post.html[0m
+[33m             Error: Could not locate the included file 'comments.html' in any of ["/Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_includes", "/Users/baidu/.rvm/gems/ruby-2.4.1/gems/minima-2.5.0/_includes"]. Ensure it exists in one of those directories and is not a symlink as those are not allowed in safe mode.[0m
+[33m             Error: Run jekyll build --trace for more information.[0m
+
+      Regenerating: 13 file(s) changed at 2018-09-30 17:45:48
+                    nohup.out
+                    _includes/duplicate.html
+                    _includes/newpost.html
+                    _includes/head.html
+                    _includes/comments.html
+                    _includes/footer.html
+                    _includes/header.html
+                    _includes.bak/duplicate.html
+                    _includes.bak/newpost.html
+                    _includes.bak/head.html
+                    _includes.bak/comments.html
+                    _includes.bak/footer.html
+                    _includes.bak/header.html
+[31m             Error: YAML Exception reading /Users/baidu/baidu/baidu_docs/work/blog/mythmgn.github.io/_posts/技术积累/2018-09-10-[python] keywords.markdown: (<unknown>): did not find expected key while parsing a block mapping at line 2 column 1[0m
+                    ...done in 0.198956 seconds.
+

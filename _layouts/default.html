@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+ <!--  <body data-spy="scroll" data-target="#myAffix"> -->
+  <body>
+
+    {% include header.html %}
+
+    <div id="main" class="container main">
+      {{ content }}
+    </div>
+
+    <div id="top" data-toggle="tooltip" data-placement="left" title="back to top">
+      <a href="#">
+        <div class="arrow"></div>
+        <div class="stick"></div>
+      </a>
+    </div>
+    <script>
+    var amountScrolled = 300;
+
+    $(window).scroll(function() {
+            if ( $(window).scrollTop() > amountScrolled ) {
+            $('a.arrow').fadeIn('slow');
+            } else {
+            $('a.arrow').fadeOut('slow');
+            }
+            });
+
+    $('a.arrow').click(function() {
+            $('html, body').animate({
+    scrollTop: 0
+    }, 700);
+    return false;
+        });
+</script>
+
+    {% include footer.html %}
+
+    {% include newpost.html %}
+  
+  </body>
+</html>
