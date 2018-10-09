@@ -172,11 +172,21 @@ comments: true
     </script>
     </div>
 	
-    <!-- duoshuo.com javascript include code. -->    
+
+<section id="comments">
+<!--PC版-->
+<div id="SOHUCS" sid="<%= page.title %>"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+    appid: 'cytRgXjHX',
+    conf: 'prod_eabb8896915516ba5e00e2bf72b3615f'
+});
+</script>
+</section>
+
     
-    <!-- disqus.com javascript include code. -->
-	
-    
+
   </div>
   <div id="content" class="col-sm-3">
     <!-- <div id="myAffix" class="shadow-bottom-center hidden-xs" data-spy="affix" data-offset-top="0" data-offset-bottom="-20"> -->
