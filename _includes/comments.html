@@ -1,18 +1,12 @@
 {% if page.comments %}
 
-<div id="container"></div>
-<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
-var gitment = new Gitment({
-    id: 'localtion.href', // 可选。默认为 location.href
-    owner: 'mythmgn',
-    repo: 'mythmgn/mythmgn.github.io',
-    oauth: {
-        client_id: 'a493ecd20491caecc4ba',
-        client_secret: '9f75f6f19bb307ca601f6ac2f121999d6965be9e',
-    },
-})
-gitment.render('container')
+var idcomments_acct = '0b6011314eb0ae5aea28b4a10d5c5248';
+var idcomments_post_id;
+var idcomments_post_url;
 </script>
+<span id="IDCommentsPostTitle" style="display:none"></span>
+<script type='text/javascript' src='https://www.intensedebate.com/js/genericCommentWrapperV2.js'></script>
+
+
 {% endif %}    
