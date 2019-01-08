@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Bio
+title: 读书痕迹
 comments: true
 permalink: /about/
 ---
