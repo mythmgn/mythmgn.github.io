@@ -1,11 +1,12 @@
 ---
 layout: post
-title: [知识积累] Python踩坑之旅其一杀不死的Shell子进程
+title: "[知识积累]Python踩坑之旅其一杀不死的Shell子进程"
 categories: 知识积累
 tags: Python踩坑之旅, 知识积累
-comments: true
 toc: true
+comments: true
 ---
+
 - [Python踩坑之旅其一杀不死的Shell子进程](#python%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E5%85%B6%E4%B8%80%E6%9D%80%E4%B8%8D%E6%AD%BB%E7%9A%84shell%E5%AD%90%E8%BF%9B%E7%A8%8B)
   - [1.1 踩坑案例](#11-%E8%B8%A9%E5%9D%91%E6%A1%88%E4%BE%8B)
   - [1.2 填坑解法](#12-%E5%A1%AB%E5%9D%91%E8%A7%A3%E6%B3%95)
@@ -14,6 +15,7 @@ toc: true
     - [1.4.1 扩展知识](#141-%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86)
     - [1.4.1 技术关键字](#141-%E6%8A%80%E6%9C%AF%E5%85%B3%E9%94%AE%E5%AD%97)
   - [1.5 填坑总结](#15-%E5%A1%AB%E5%9D%91%E6%80%BB%E7%BB%93)
+  
 # Python踩坑之旅其一杀不死的Shell子进程
 
 ## 1.1 踩坑案例
