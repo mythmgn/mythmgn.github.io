@@ -3,11 +3,12 @@ layout: post
 title: "[知识积累]Python踩坑之旅其一杀不死的Shell子进程"
 categories: 知识积累
 tags: Python踩坑之旅,知识积累
-toc: true
 comments: true
 ---
-[TOC]
 
+{:toc}
+
+[TOC]
   
 # Python踩坑之旅其一杀不死的Shell子进程
 
