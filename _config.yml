@@ -26,6 +26,7 @@ github_username:  mythmgn
 
 # Build settings
 permalink: /:categories/:title/
+permalink: /404.html
 markdown: kramdown
 theme: minima
 plugins:

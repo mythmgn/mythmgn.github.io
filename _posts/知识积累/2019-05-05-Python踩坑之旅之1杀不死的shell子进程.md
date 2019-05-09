@@ -10,18 +10,18 @@ comments: true
 {:toc}
 
 [TOC]
-  
-# Python踩坑之旅其一杀不死的Shell子进程
 
 ## 1.1 踩坑案例
 
 踩坑的程序是个常驻的Agent类管理进程, 包括但不限于如下类型的任务在执行:
 
-- a. 多线程的网络通信包处理
-  - 和控制Master节点交互
-  - 有固定Listen端口
-- b. 定期作业任务, 通过subprocess.Pipe执行shell命令
-- c. etc
+    a. 多线程的网络通信包处理
+
+    - 和控制Master节点交互
+    - 有固定Listen端口
+
+    b. 定期作业任务, 通过subprocess.Pipe执行shell命令
+    c. etc
 
 发现坑的过程很有意思:
 
