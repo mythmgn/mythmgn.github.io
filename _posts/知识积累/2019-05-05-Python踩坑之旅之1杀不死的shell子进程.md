@@ -9,7 +9,6 @@ comments: true
 * Table of contents
 {:toc}
 
-[TOC]
 
 ## 1.1 踩坑案例
 
