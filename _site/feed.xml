@@ -1,132 +1,445 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>慎见慎思</title>
+    <title>程序员的梦呓指南</title>
     <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 09 Oct 2018 20:58:27 +0800</pubDate>
-    <lastBuildDate>Tue, 09 Oct 2018 20:58:27 +0800</lastBuildDate>
-    <generator>Jekyll v3.7.4</generator>
+    <pubDate>Tue, 27 Jul 2021 17:26:46 +0800</pubDate>
+    <lastBuildDate>Tue, 27 Jul 2021 17:26:46 +0800</lastBuildDate>
+    <generator>Jekyll v3.9.0</generator>
     
       <item>
-        <title>[音乐之旅][温柔的夜专辑]春风沉醉的晚上</title>
-        <description>&lt;p&gt;一瞬间的包围 挣扎有用吗  它就在眼前&lt;/p&gt;
+        <title>[知识积累]Python踩坑之旅其二裸用os.sytem的原罪</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#python-踩坑之旅其一杀不死的-shell-子进程&quot; id=&quot;markdown-toc-python-踩坑之旅其一杀不死的-shell-子进程&quot;&gt;Python 踩坑之旅其一杀不死的 Shell 子进程&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#踩坑案例&quot; id=&quot;markdown-toc-踩坑案例&quot;&gt;踩坑案例&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#填坑解法&quot; id=&quot;markdown-toc-填坑解法&quot;&gt;填坑解法&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#坑位分析&quot; id=&quot;markdown-toc-坑位分析&quot;&gt;坑位分析&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#技术关键字&quot; id=&quot;markdown-toc-技术关键字&quot;&gt;技术关键字&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#填坑总结&quot; id=&quot;markdown-toc-填坑总结&quot;&gt;填坑总结&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#前坑回顾&quot; id=&quot;markdown-toc-前坑回顾&quot;&gt;前坑回顾&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#linux中-子进程拷贝父进程哪些信息&quot; id=&quot;markdown-toc-linux中-子进程拷贝父进程哪些信息&quot;&gt;Linux中, 子进程拷贝父进程哪些信息&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#agent常驻进程选择60000端口的意义&quot; id=&quot;markdown-toc-agent常驻进程选择60000端口的意义&quot;&gt;Agent常驻进程选择&amp;gt;60000端口的意义&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;在这春风沉醉的晚上 让我们荡起那小船&lt;/p&gt;
+&lt;h1 id=&quot;python-踩坑之旅其一杀不死的-shell-子进程&quot;&gt;Python 踩坑之旅其一杀不死的 Shell 子进程&lt;/h1&gt;
 
-&lt;p&gt;一起沉沦&lt;/p&gt;
+&lt;h2 id=&quot;踩坑案例&quot;&gt;踩坑案例&lt;/h2&gt;
 
-&lt;p&gt;脱下你的黑色&lt;/p&gt;
+&lt;p&gt;今天的坑不仅包括裸用os.system还包括裸用相关的家族:&lt;/p&gt;
 
-&lt;p&gt;武装到牙齿的身影&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;os.popen&lt;/li&gt;
+  &lt;li&gt;subprocess家族
+    &lt;ul&gt;
+      &lt;li&gt;subprocess.call&lt;/li&gt;
+      &lt;li&gt;subprocess.Popen&lt;/li&gt;
+      &lt;li&gt;subprocess.run&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;commands家族 (py2.6后已不推荐使用， depreciated. Py3删除)
+    &lt;ul&gt;
+      &lt;li&gt;commands.getstatusoutput&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;让我们扬起帆&lt;/p&gt;
+&lt;p&gt;这些坑是新同学非常容易踩，而且 code review 过程中容易漏掉:&lt;/p&gt;
 
-&lt;p&gt;在这春风沉醉的晚上&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;[1] 长期运行 Service 中裸用以函数家族&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;让我们荡起那小船&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;裸用以上 shell 执行家族可能出现script 执行 hang 住进而 hang 住逻辑执行线程，长时间积累进而占满所有执行线程而服务宕机情况&lt;/li&gt;
+  &lt;li&gt;大内存消耗 service fork 子进程直接执行 script
+    &lt;ul&gt;
+      &lt;li&gt;如果该 script hang 住&lt;/li&gt;
+      &lt;li&gt;并且原进程内存进行频繁修改（或者堆积修改， 虽然有 Copy-On-Write技术），但由于内存巨大，依然有内存风险&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;一起沉沦&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;[2] 自动化测试中裸用以上函数家族而不加以保护&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;单个 case 如果执行 script 脚本 hang 住会导致 hang 掉整个case 集&lt;/li&gt;
+  &lt;li&gt;不设计 case 超时机制导致case 集合运行时间不可控&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;填坑解法&quot;&gt;填坑解法&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;支持超时 kill 策略，禁止任何情况下的 shell 执行裸用家族函数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cup&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shell&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;shellexec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ShellExec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# timeout=None will block the execution until it finishes
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;shellexec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/bin/ls'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# timeout&amp;gt;=0 will open non-blocking mode
+&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# The process will be killed if the cmd timeouts
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;shellexec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/bin/ls'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;实现代码关键:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;启动新的线程执行， 而不是在 main thread 执行&lt;/li&gt;
+  &lt;li&gt;强制超时机制支持， 一旦超时启动 terminate 或者 kill 策略&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;实现示例可以参考 ShellExec类的run函数:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://github.com/baidu/CUP/blob/master/cup/shell/oper.py&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;截取部分关键代码如下：&lt;/p&gt;
+
+    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;_pipe_asshell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+          run shell with subprocess.Popen
+          &quot;&quot;&quot;&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;tempscript&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NamedTemporaryFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+
+              &lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_tmpdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_tmpprefix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempscript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'w+b'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fhandle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;fhandle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'cd {0};&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getcwd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;fhandle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;shexe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;which&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'sh'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;cmds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shexe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tempscript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+              &lt;span class=&quot;s&quot;&gt;'cup shell execute {0} with script {1}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                  &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Popen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;cmds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;preexec_fn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_signal_handle&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro_data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;communicate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;'stdout'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;'stderr'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;'returncode'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;cmdthd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_pipe_asshell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;cmdthd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;cmdthd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmdthd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isAlive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;str_warn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+              &lt;span class=&quot;s&quot;&gt;'Shell &quot;%s&quot;execution timout:%d. Killed it'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;warnings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;warn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;str_warn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;RuntimeWarning&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;parent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;child&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;children&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kill&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;signal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SIGKILL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'returncode'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;999&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'stderr'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str_warn&lt;/span&gt;
+          &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;terminate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;returncode&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'returncode'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;returncode&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; \
+              &lt;span class=&quot;s&quot;&gt;'self._subpro_data should be a tuple'&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'stdout'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'stderr'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;内存消耗型服务/进程， 长期运行服务进程避免fork 进程执行 shell 命令&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;分离相应的脚本执行单元到其他附属服务&lt;/li&gt;
+  &lt;li&gt;若不分离，让该长期运行进程保持低内存消耗设计&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;坑位分析&quot;&gt;坑位分析&lt;/h2&gt;
+
+&lt;p&gt;建议看下第二章节关于进程和子进程继承类信息，script使用上述家族进行执行时，采用了启动一个子进程的方式&lt;/p&gt;
+
+&lt;h2 id=&quot;技术关键字&quot;&gt;技术关键字&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;os.system家族&lt;/li&gt;
+  &lt;li&gt;subprocess家族&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;填坑总结&quot;&gt;填坑总结&lt;/h2&gt;
+
+&lt;p&gt;Shell执行是个非常常见的操作，所以很多同学特别是新同学，在使用过程中经常不注意而随意使用。 裸用一时爽，进程死亡火葬场&lt;/p&gt;
+
+&lt;h1 id=&quot;前坑回顾&quot;&gt;前坑回顾&lt;/h1&gt;
+
+&lt;h2 id=&quot;linux中-子进程拷贝父进程哪些信息&quot;&gt;Linux中, 子进程拷贝父进程哪些信息&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;先说与父进程不同的
+    &lt;ul&gt;
+      &lt;li&gt;pid, ppid&lt;/li&gt;
+      &lt;li&gt;memory locks&lt;/li&gt;
+      &lt;li&gt;tms_utime、tms_stime、tms_cutime、tms_ustime&lt;/li&gt;
+      &lt;li&gt;pending signals&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/questions/34452654/what-child-does-not-inherit-semaphore-adjustments-from-its-parent-semop2-mea&quot;&gt;semaphore adjustments&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;file lock&lt;/li&gt;
+      &lt;li&gt;pending alarms&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;参考资料来源:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Linux Programmer’s Manual ( &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;man fork&lt;/code&gt; )
+    &lt;ul&gt;
+      &lt;li&gt;CentOS release 6.3 (Final)&lt;/li&gt;
+      &lt;li&gt;Linux Kernel 2.6.32&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+fork&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;  creates a new process by duplicating the calling process.  The new process, referred to as the child, is an exact duplicate of the calling process, referred to as the parent, except &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the follow-
+ing points:
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child has its own unique process ID, and this PID does not match the ID of any existing process group &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;setpgid&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child&lt;span class=&quot;s1&quot;&gt;'s parent process ID is the same as the parent'&lt;/span&gt;s process ID.
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child does not inherit its parent&lt;span class=&quot;s1&quot;&gt;'s memory locks (mlock(2), mlockall(2)).
+
+    *  Process resource utilizations (getrusage(2)) and CPU time counters (times(2)) are reset to zero in the child.
+
+    *  The child'&lt;/span&gt;s &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;of pending signals is initially empty &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;sigpending&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child does not inherit semaphore adjustments from its parent &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;semop&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child does not inherit record locks from its parent &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;fcntl&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child does not inherit timers from its parent &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;setitimer&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, alarm&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, timer_create&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child does not inherit outstanding asynchronous I/O operations from its parent &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;aio_read&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, aio_write&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;, nor does it inherit any asynchronous I/O contexts from its parent &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;seeio_setup&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+       The process attributes &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the preceding list are all specified &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;POSIX.1-2001.  The parent and child also differ with respect to the following Linux-specific process attributes:
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The child does not inherit directory change notifications &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;dnotify&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; from its parent &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;see the description of F_NOTIFY &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;fcntl&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The prctl&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; PR_SET_PDEATHSIG setting is reset so that the child does not receive a signal when its parent terminates.
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  Memory mappings that have been marked with the madvise&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; MADV_DONTFORK flag are not inherited across a fork&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;  The termination signal of the child is always SIGCHLD &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;see clone&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在说继承、拷贝父进程的&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;包括
+    &lt;ul&gt;
+      &lt;li&gt;内部数据空间&lt;/li&gt;
+      &lt;li&gt;堆栈&lt;/li&gt;
+      &lt;li&gt;用户 ID、组 ID、eid 有效用户 id、有效组 id、用户 id 标志和设置组 id 标志&lt;/li&gt;
+      &lt;li&gt;进程组 id&lt;/li&gt;
+      &lt;li&gt;会话 id&lt;/li&gt;
+      &lt;li&gt;终端&lt;/li&gt;
+      &lt;li&gt;当前目录、根目录&lt;/li&gt;
+      &lt;li&gt;文件模式屏蔽字&lt;/li&gt;
+      &lt;li&gt;信号屏蔽设置&lt;/li&gt;
+      &lt;li&gt;打开文件描述符&lt;/li&gt;
+      &lt;li&gt;环境&lt;/li&gt;
+      &lt;li&gt;共享存储段&lt;/li&gt;
+      &lt;li&gt;存储映射&lt;/li&gt;
+      &lt;li&gt;资源限制&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;此外&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在父进程创建 (fork) 出一个子进程过程中, 为了加速, 会使用叫做 copy-on-write 的技术. 
+	- 这项技术在存储软件领域也经常使用
+	- &lt;a href=&quot;https://unix.stackexchange.com/questions/58145/how-does-copy-on-write-in-fork-handle-multiple-fork&quot;&gt;附上一个关于它的讨论，点击查看&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;agent常驻进程选择60000端口的意义&quot;&gt;Agent常驻进程选择&amp;gt;60000端口的意义&lt;/h2&gt;
+
+&lt;p&gt;在 Linux 系统中， 一般系统会自动替程序选择端口连接到用户指定的目的端口， 而这个端口范围是提前设定好的， 比如作者的 centos：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /proc/sys/net/ipv4/ip_local_port_range
+10000   60000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;选择 60000 以上的端口可以避免冲突&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.cnblogs.com/solohac/p/4154180.html&quot;&gt;附上一篇讨论该ip_local_port_range的文章，欢迎查看&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
-        <pubDate>Sun, 30 Sep 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/%E9%9F%B3%E4%B9%90%E4%B9%8B%E6%97%85/%E6%B8%A9%E6%9F%94%E7%9A%84%E5%A4%9C%E6%98%A5%E9%A3%8E%E6%B2%89%E9%86%89%E7%9A%84%E6%99%9A%E4%B8%8A/</link>
-        <guid isPermaLink="true">http://localhost:4000/%E9%9F%B3%E4%B9%90%E4%B9%8B%E6%97%85/%E6%B8%A9%E6%9F%94%E7%9A%84%E5%A4%9C%E6%98%A5%E9%A3%8E%E6%B2%89%E9%86%89%E7%9A%84%E6%99%9A%E4%B8%8A/</guid>
+        <pubDate>Fri, 10 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/Python-%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E5%85%B6%E4%BA%8C%E8%A3%B8%E7%94%A8%E7%B1%BBos.system%E5%87%BD%E6%95%B0%E7%9A%84%E5%8E%9F%E7%BD%AA/</link>
+        <guid isPermaLink="true">http://localhost:4000/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/Python-%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E5%85%B6%E4%BA%8C%E8%A3%B8%E7%94%A8%E7%B1%BBos.system%E5%87%BD%E6%95%B0%E7%9A%84%E5%8E%9F%E7%BD%AA/</guid>
         
-        <category>温柔的夜,</category>
-        
-        <category>音乐</category>
+        <category>Python踩坑之旅,知识积累</category>
         
         
-        <category>音乐之旅</category>
+        <category>知识积累</category>
         
       </item>
     
       <item>
-        <title>逐渐消失的周礼和汹涌的圣母心</title>
+        <title>[知识积累]Python踩坑之旅其一杀不死的Shell子进程</title>
         <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#祭祀制度&quot; id=&quot;markdown-toc-祭祀制度&quot;&gt;祭祀制度&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#齐家&quot; id=&quot;markdown-toc-齐家&quot;&gt;齐家&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#血缘纽带&quot; id=&quot;markdown-toc-血缘纽带&quot;&gt;血缘纽带&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#11-踩坑案例&quot; id=&quot;markdown-toc-11-踩坑案例&quot;&gt;1.1 踩坑案例&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#12-填坑解法&quot; id=&quot;markdown-toc-12-填坑解法&quot;&gt;1.2 填坑解法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#13-坑位分析&quot; id=&quot;markdown-toc-13-坑位分析&quot;&gt;1.3 坑位分析&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#14-坑后扩展&quot; id=&quot;markdown-toc-14-坑后扩展&quot;&gt;1.4 坑后扩展&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#141-扩展知识&quot; id=&quot;markdown-toc-141-扩展知识&quot;&gt;1.4.1 扩展知识&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#141-技术关键字&quot; id=&quot;markdown-toc-141-技术关键字&quot;&gt;1.4.1 技术关键字&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#长幼有序&quot; id=&quot;markdown-toc-长幼有序&quot;&gt;长幼有序&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#父慈子孝&quot; id=&quot;markdown-toc-父慈子孝&quot;&gt;父慈子孝&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#男女关系&quot; id=&quot;markdown-toc-男女关系&quot;&gt;男女关系&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#碎片化想法&quot; id=&quot;markdown-toc-碎片化想法&quot;&gt;碎片化想法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#15-填坑总结&quot; id=&quot;markdown-toc-15-填坑总结&quot;&gt;1.5 填坑总结&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;和平与秩序无论是国、还是家最重要的部分。过去几十年为什么农村保留了较为完整的祭祀等制度，还是农村的社会组织形式和祭祀制度相互需要。&lt;/p&gt;
+&lt;h2 id=&quot;11-踩坑案例&quot;&gt;1.1 踩坑案例&lt;/h2&gt;
 
-&lt;h2 id=&quot;祭祀制度&quot;&gt;祭祀制度&lt;/h2&gt;
-&lt;h3 id=&quot;齐家&quot;&gt;齐家&lt;/h3&gt;
-&lt;ol&gt;
-  &lt;li&gt;皇权与绅权分治一直是中国宪制的基本格局
+&lt;p&gt;踩坑的程序是个常驻的Agent类管理进程, 包括但不限于如下类型的任务在执行:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;a. 多线程的网络通信包处理
+	- 和控制Master节点交互
+	- 有固定Listen端口
+b. 定期作业任务, 通过subprocess.Pipe执行shell命令
+c. etc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;发现坑的过程很有意思:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;a.重启Agent发现Port被占用了&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;=&amp;gt; 立刻&lt;strong&gt;想到可能进程没被杀死, 是不是停止脚本出问题&lt;/strong&gt;
     &lt;ul&gt;
-      &lt;li&gt;“家”中的事务治理一般依赖不了皇权，清官难断家务事&lt;/li&gt;
-      &lt;li&gt;皇权一般赋予当地一定绅权或者福利进行权利分治&lt;/li&gt;
+      &lt;li&gt;=&amp;gt; 排除发现不是, Agent进程确实死亡了&lt;/li&gt;
+      &lt;li&gt;=&amp;gt; 通过 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;netstat -tanop|grep port_number&lt;/code&gt; 发现端口确实有人占用&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;齐家中的家更多指的是五福内的家族及出五福的宗族&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;血缘纽带&quot;&gt;血缘纽带&lt;/h4&gt;
-&lt;p&gt;户、室、房、房支&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;稳定的管理
+  &lt;li&gt;=&amp;gt; 调试环境, &lt;strong&gt;直接杀掉占用进程了之, 错失首次发现问题的机会&lt;/strong&gt;
+&lt;strong&gt;b.问题&lt;/strong&gt;在一段时间后&lt;strong&gt;重现&lt;/strong&gt;， 重启后Port还是被占用&lt;/li&gt;
+  &lt;li&gt;定位问题出现在一个叫做xxxxxx.sh的脚本, 该脚本占用了Agent使用的端口
     &lt;ul&gt;
-      &lt;li&gt;修桥修路&lt;/li&gt;
-      &lt;li&gt;抗旱抗涝&lt;/li&gt;
-      &lt;li&gt;婚丧嫁娶&lt;/li&gt;
+      &lt;li&gt;=&amp;gt; 奇了怪了, 一个xxx.sh脚本使用这个奇葩Port干啥(大于60000的Port, 有兴趣的砖友可以想下为什么Agent默认使用6W+的端口)&lt;/li&gt;
+      &lt;li&gt;=&amp;gt; review&lt;strong&gt;该脚本并没有进行端口监听的代码&lt;/strong&gt;
+一拍脑袋, &lt;strong&gt;c.进程共享了父进程资源&lt;/strong&gt;了&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ol&gt;
+  &lt;li&gt;=&amp;gt; 溯源该脚本,发现确实是Agent启动的任务中的脚本之一&lt;/li&gt;
+  &lt;li&gt;=&amp;gt; 问题基本定位, 该脚本属于Agent调用的脚本&lt;/li&gt;
+  &lt;li&gt;=&amp;gt; 该Agent继承了Agent原来的资源FD, 也就是这个port&lt;/li&gt;
+  &lt;li&gt;=&amp;gt; 虽然该脚本由于超时被动触发了terminate机制, 但terminate并没有干掉这个子进程&lt;/li&gt;
+  &lt;li&gt;=&amp;gt; 该脚本进程的父进程(ppid) 被重置为了1
+&lt;strong&gt;d.问题&lt;/strong&gt;&lt;strong&gt;出在脚本进程超时kill逻辑&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;h2 id=&quot;长幼有序&quot;&gt;长幼有序&lt;/h2&gt;
-&lt;p&gt;君君臣臣，夫&lt;/p&gt;
+&lt;h2 id=&quot;12-填坑解法&quot;&gt;1.2 填坑解法&lt;/h2&gt;
 
-&lt;h3 id=&quot;父慈子孝&quot;&gt;父慈子孝&lt;/h3&gt;
+&lt;p&gt;通过代码review, 找到shell具体执行的库代码如下:&lt;/p&gt;
 
-&lt;h3 id=&quot;男女关系&quot;&gt;男女关系&lt;/h3&gt;
-&lt;p&gt;男女关系是延续村落非常重要的一环。一纵一横（父子的纵向关系和兄弟间的横向关系）的关系是稳定的，
-但缺乏流动性和创造力；男女关系是流动的，充满创造力和颠覆性，但伴生着危险，打破原有稳定秩序的风险。&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Popen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shell&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;preexec_fn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_signal_handle&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# 重点是shell=True !
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;像弑父娶母、杀兄偷嫂、勾引小叔子类. 国内外都有不同的文学经典进行了示例
-男女有别： 男人由体力提供生活物资，女人抚养下一代；男女间进行乱伦大防，防止影响村落组织的稳定性
-一旦出现打破原有稳定组织结构的男女关系发生，会对原关系网产生波动、最后很可能由整个村落进行埋单 （像电影杀生）&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;把上述代码改为:&lt;/p&gt;
 
-&lt;p&gt;因此无论是男女有别、同姓不婚、从夫居住等都是为了有效、便利地构成和组成农耕、人力驱动的村落组织，
-并保持它的稳定性。&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_subpro&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Popen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subprocess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PIPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;preexec_fn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_signal_handle&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# 重点是去掉了shell=True
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h1 id=&quot;碎片化想法&quot;&gt;碎片化想法&lt;/h1&gt;
+&lt;h2 id=&quot;13-坑位分析&quot;&gt;1.3 坑位分析&lt;/h2&gt;
+
+&lt;p&gt;Agent会在一个新创建的threading线程中执行这段代码, 如果线程执行时间超时(xx seconds), 会调用 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;self._subpro.terminate()&lt;/code&gt;终止该脚本.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;启用新线程执行该脚本&lt;/li&gt;
+  &lt;li&gt;如果出现问题,执行超时防止hang住其他任务执行调用terminate杀死进程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;深层问题:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Python 2.7.x中subprocess.Pipe 如果shell=True, 会默认把相关的pid设置为shell(sh/bash/etc)本身(执行命令的shell父进程), 并非执行cmd任务的那个进程&lt;/li&gt;
+  &lt;li&gt;子进程由于会复制父进程的opened FD表, 导致即使被杀死, 依然保留了拥有这个Listened Port FD&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这样虽然杀死了shell进程(未必死亡, 可能进入defunct状态), 但实际的执行进程确活着. 于是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1.1&lt;/code&gt;中的坑就被结实的踩上了.&lt;/p&gt;
+
+&lt;h2 id=&quot;14-坑后扩展&quot;&gt;1.4 坑后扩展&lt;/h2&gt;
+
+&lt;h3 id=&quot;141-扩展知识&quot;&gt;1.4.1 扩展知识&lt;/h3&gt;
+
+&lt;p&gt;本节扩展知识包括二个部分:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Linux系统中, 子进程一般会继承父进程的哪些信息&lt;/li&gt;
+  &lt;li&gt;Agent这种常驻进程选择&amp;gt;60000端口的意义&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;扩展知识留到下篇末尾讲述, 感兴趣的可以自行搜索&lt;/p&gt;
+
+&lt;h3 id=&quot;141-技术关键字&quot;&gt;1.4.1 技术关键字&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Linux系统进程&lt;/li&gt;
+  &lt;li&gt;Linux随机端口选择&lt;/li&gt;
+  &lt;li&gt;程序多线程执行&lt;/li&gt;
+  &lt;li&gt;Shell执行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;15-填坑总结&quot;&gt;1.5 填坑总结&lt;/h2&gt;
+
 &lt;ol&gt;
-  &lt;li&gt;保持组织发展的几个要素：
+  &lt;li&gt;子进程会继承父进程的资源信息&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果只kill某进程的父进程, 集成了父进程资源的子进程会继续占用父进程的资源不释放, 包括但不限于&lt;/p&gt;
+
     &lt;ul&gt;
-      &lt;li&gt;结构稳定&lt;/li&gt;
-      &lt;li&gt;团结协作&lt;/li&gt;
-      &lt;li&gt;保持流动性（或 保持创造力）&lt;/li&gt;
+      &lt;li&gt;listened port&lt;/li&gt;
+      &lt;li&gt;opened fd&lt;/li&gt;
+      &lt;li&gt;etc&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
+  &lt;li&gt;Python Popen使用上, shell的bool状态决定了进程kill的逻辑, 需要根据场景选择使用方式&lt;/li&gt;
 &lt;/ol&gt;
-
-&lt;p&gt;##&lt;/p&gt;
 </description>
-        <pubDate>Mon, 10 Sep 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/%E6%85%8E%E8%A7%81%E6%85%8E%E6%80%9D/%E5%A4%A7%E5%9B%BD%E5%AE%AA%E5%88%B6/</link>
-        <guid isPermaLink="true">http://localhost:4000/%E6%85%8E%E8%A7%81%E6%85%8E%E6%80%9D/%E5%A4%A7%E5%9B%BD%E5%AE%AA%E5%88%B6/</guid>
+        <pubDate>Sun, 05 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/Python%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E4%B9%8B1%E6%9D%80%E4%B8%8D%E6%AD%BB%E7%9A%84shell%E5%AD%90%E8%BF%9B%E7%A8%8B/</link>
+        <guid isPermaLink="true">http://localhost:4000/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/Python%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E4%B9%8B1%E6%9D%80%E4%B8%8D%E6%AD%BB%E7%9A%84shell%E5%AD%90%E8%BF%9B%E7%A8%8B/</guid>
         
-        <category>政治</category>
-        
-        <category>思考</category>
+        <category>Python踩坑之旅,知识积累</category>
         
         
-        <category>慎见慎思</category>
+        <category>知识积累</category>
         
       </item>
     
@@ -341,7 +654,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[原文地址]http://googletesting.blogspot.jp/2013/06/optimal-logging.html
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[原文地址]http://googletesting.blogspot.jp/2013/06/optimal-logging.html
 
 目测需要翻墙
 作者：Anthony Vallone

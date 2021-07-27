@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>[知识积累]Python踩坑之旅其一杀不死的Shell子进程</title>
+	<meta name="description" content="">
+	
+	<link rel="canonical" href="http://localhost:4000/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/Python%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E4%B9%8B1%E6%9D%80%E4%B8%8D%E6%AD%BB%E7%9A%84shell%E5%AD%90%E8%BF%9B%E7%A8%8B/">
+	<link rel="alternate" type="application/rss+xml" title="程序员的梦呓指南" href="http://localhost:4000/feed.xml" />
+	
+	<!-- <link rel="stylesheet" href="/css/main.css"> -->
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/monokai_sublime.min.css">
+	<script type="text/javascript" src="/static/js/highlight.min.js"></script>
+
+    <!--
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css">
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/highlight.js/8.4/styles/monokai_sublime.min.css">
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/highlight.js/8.4/highlight.min.js"></script>
+    -->
+    
+	<script type="text/javascript" src="/static/js/index.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+ <!--  <body data-spy="scroll" data-target="#myAffix"> -->
+  <body>
+
+    <header>
+
+<!-- navbar -->
+  <nav class="navbar navbar-inverse">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">程序员的梦呓指南</a>
+      <p class="navbar-text"></p>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+
+        
+          <li>
+        
+        <a href="/">Home</a></li>
+
+        
+          
+            
+              <li>
+            
+            <a href="/about/"><span class="glyphicon "></span> 个人简介</a></li>
+          
+        
+          
+            
+              <li>
+            
+            <a href="/about/"><span class="glyphicon "></span> 读书痕迹</a></li>
+          
+        
+          
+        
+          
+        
+          
+            
+              <li>
+            
+            <a href="/"><span class="glyphicon "></span> 欢迎来到慎见慎思</a></li>
+          
+        
+          
+        
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+</header>
+
+    <div id="main" class="container main">
+      <div class="row">
+  <div id="content" class="col-sm-3">
+    <!-- <div id="myAffix" class="shadow-bottom-center hidden-xs" data-spy="affix" data-offset-top="0" data-offset-bottom="-20"> -->
+    <div id="myAffix" class="shadow-bottom-center hidden-xs" >
+      <div class="categories-list-header">
+        Content
+      </div>
+      <div class="content-text"></div>
+    </div>
+  </div>
+
+  <div id="myArticle" class="col-sm-9">
+    <div class="post-area post">
+      <header>
+        <h1>[知识积累]Python踩坑之旅其一杀不死的Shell子进程</h1>
+        <p>May 5, 2019</p>
+      </header>
+      <hr>
+      <article>
+        <ul id="markdown-toc">
+  <li><a href="#11-踩坑案例" id="markdown-toc-11-踩坑案例">1.1 踩坑案例</a></li>
+  <li><a href="#12-填坑解法" id="markdown-toc-12-填坑解法">1.2 填坑解法</a></li>
+  <li><a href="#13-坑位分析" id="markdown-toc-13-坑位分析">1.3 坑位分析</a></li>
+  <li><a href="#14-坑后扩展" id="markdown-toc-14-坑后扩展">1.4 坑后扩展</a>    <ul>
+      <li><a href="#141-扩展知识" id="markdown-toc-141-扩展知识">1.4.1 扩展知识</a></li>
+      <li><a href="#141-技术关键字" id="markdown-toc-141-技术关键字">1.4.1 技术关键字</a></li>
+    </ul>
+  </li>
+  <li><a href="#15-填坑总结" id="markdown-toc-15-填坑总结">1.5 填坑总结</a></li>
+</ul>
+
+<h2 id="11-踩坑案例">1.1 踩坑案例</h2>
+
+<p>踩坑的程序是个常驻的Agent类管理进程, 包括但不限于如下类型的任务在执行:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a. 多线程的网络通信包处理
+	- 和控制Master节点交互
+	- 有固定Listen端口
+b. 定期作业任务, 通过subprocess.Pipe执行shell命令
+c. etc
+</code></pre></div></div>
+
+<p>发现坑的过程很有意思:</p>
+
+<p><strong>a.重启Agent发现Port被占用了</strong></p>
+<ul>
+  <li>=&gt; 立刻<strong>想到可能进程没被杀死, 是不是停止脚本出问题</strong>
+    <ul>
+      <li>=&gt; 排除发现不是, Agent进程确实死亡了</li>
+      <li>=&gt; 通过 <code class="language-plaintext highlighter-rouge">netstat -tanop|grep port_number</code> 发现端口确实有人占用</li>
+    </ul>
+  </li>
+  <li>=&gt; 调试环境, <strong>直接杀掉占用进程了之, 错失首次发现问题的机会</strong>
+<strong>b.问题</strong>在一段时间后<strong>重现</strong>， 重启后Port还是被占用</li>
+  <li>定位问题出现在一个叫做xxxxxx.sh的脚本, 该脚本占用了Agent使用的端口
+    <ul>
+      <li>=&gt; 奇了怪了, 一个xxx.sh脚本使用这个奇葩Port干啥(大于60000的Port, 有兴趣的砖友可以想下为什么Agent默认使用6W+的端口)</li>
+      <li>=&gt; review<strong>该脚本并没有进行端口监听的代码</strong>
+一拍脑袋, <strong>c.进程共享了父进程资源</strong>了</li>
+    </ul>
+  </li>
+  <li>=&gt; 溯源该脚本,发现确实是Agent启动的任务中的脚本之一</li>
+  <li>=&gt; 问题基本定位, 该脚本属于Agent调用的脚本</li>
+  <li>=&gt; 该Agent继承了Agent原来的资源FD, 也就是这个port</li>
+  <li>=&gt; 虽然该脚本由于超时被动触发了terminate机制, 但terminate并没有干掉这个子进程</li>
+  <li>=&gt; 该脚本进程的父进程(ppid) 被重置为了1
+<strong>d.问题</strong><strong>出在脚本进程超时kill逻辑</strong></li>
+</ul>
+
+<h2 id="12-填坑解法">1.2 填坑解法</h2>
+
+<p>通过代码review, 找到shell具体执行的库代码如下:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span> <span class="o">=</span> <span class="n">subprocess</span><span class="p">.</span><span class="n">Popen</span><span class="p">(</span>
+    <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="p">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="p">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">preexec_fn</span><span class="o">=</span><span class="n">_signal_handle</span>
+<span class="p">)</span>
+<span class="c1"># 重点是shell=True !
+</span></code></pre></div></div>
+
+<p>把上述代码改为:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span> <span class="o">=</span> <span class="n">subprocess</span><span class="p">.</span><span class="n">Popen</span><span class="p">(</span>
+    <span class="n">cmd</span><span class="p">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="p">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="p">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">preexec_fn</span><span class="o">=</span><span class="n">_signal_handle</span>
+<span class="p">)</span>
+<span class="c1"># 重点是去掉了shell=True
+</span></code></pre></div></div>
+
+<h2 id="13-坑位分析">1.3 坑位分析</h2>
+
+<p>Agent会在一个新创建的threading线程中执行这段代码, 如果线程执行时间超时(xx seconds), 会调用 <code class="language-plaintext highlighter-rouge">self._subpro.terminate()</code>终止该脚本.</p>
+
+<ul>
+  <li>启用新线程执行该脚本</li>
+  <li>如果出现问题,执行超时防止hang住其他任务执行调用terminate杀死进程</li>
+</ul>
+
+<p>深层问题:</p>
+
+<ul>
+  <li>Python 2.7.x中subprocess.Pipe 如果shell=True, 会默认把相关的pid设置为shell(sh/bash/etc)本身(执行命令的shell父进程), 并非执行cmd任务的那个进程</li>
+  <li>子进程由于会复制父进程的opened FD表, 导致即使被杀死, 依然保留了拥有这个Listened Port FD</li>
+</ul>
+
+<p>这样虽然杀死了shell进程(未必死亡, 可能进入defunct状态), 但实际的执行进程确活着. 于是<code class="language-plaintext highlighter-rouge">1.1</code>中的坑就被结实的踩上了.</p>
+
+<h2 id="14-坑后扩展">1.4 坑后扩展</h2>
+
+<h3 id="141-扩展知识">1.4.1 扩展知识</h3>
+
+<p>本节扩展知识包括二个部分:</p>
+
+<ul>
+  <li>Linux系统中, 子进程一般会继承父进程的哪些信息</li>
+  <li>Agent这种常驻进程选择&gt;60000端口的意义</li>
+</ul>
+
+<p>扩展知识留到下篇末尾讲述, 感兴趣的可以自行搜索</p>
+
+<h3 id="141-技术关键字">1.4.1 技术关键字</h3>
+
+<ul>
+  <li>Linux系统进程</li>
+  <li>Linux随机端口选择</li>
+  <li>程序多线程执行</li>
+  <li>Shell执行</li>
+</ul>
+
+<h2 id="15-填坑总结">1.5 填坑总结</h2>
+
+<ol>
+  <li>子进程会继承父进程的资源信息</li>
+  <li>
+    <p>如果只kill某进程的父进程, 集成了父进程资源的子进程会继续占用父进程的资源不释放, 包括但不限于</p>
+
+    <ul>
+      <li>listened port</li>
+      <li>opened fd</li>
+      <li>etc</li>
+    </ul>
+  </li>
+  <li>Python Popen使用上, shell的bool状态决定了进程kill的逻辑, 需要根据场景选择使用方式</li>
+</ol>
+
+      </article>
+      <hr>
+     <div class="wechat-public"> 
+        首发公众号: <img alt="微信扫一扫关注公众号" src="/static/img/wechat-gongzhonghao.png"/>
+    </div>
+
+      <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a></div>
+      <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"32"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+     </div>
+
+    </div>
+	
+
+<section id="comments">
+<!--PC版-->
+<div id="SOHUCS" sid="[知识积累]Python踩坑之旅其一杀不死的Shell子进程"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+    appid: 'cytRgXjHX',
+    conf: 'prod_eabb8896915516ba5e00e2bf72b3615f'
+});
+
+document.getElementById(“pop_ad").style.display="none";
+</script>
+</section>
+
+    
+
+</div>
+
+    </div>
+
+    <div id="top" data-toggle="tooltip" data-placement="left" title="back to top">
+      <a href="#">
+        <div class="arrow"></div>
+        <div class="stick"></div>
+      </a>
+    </div>
+    <script>
+    var amountScrolled = 300;
+
+    $(window).scroll(function() {
+            if ( $(window).scrollTop() > amountScrolled ) {
+            $('a.arrow').fadeIn('slow');
+            } else {
+            $('a.arrow').fadeOut('slow');
+            }
+            });
+
+    $('a.arrow').click(function() {
+            $('html, body').animate({
+    scrollTop: 0
+    }, 700);
+    return false;
+        });
+</script>
+
+    <footer class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+          <span><a href="/feed.xml">RSS</a></span>
+          <span class="point"> · </span>
+
+        <a href="mailto:mythmgn at gmail.com"><span class="glyphicon glyphicon-envelope"></span> mythmgn at gmail.com</a>
+        <span class="point"> · </span>
+        
+          <a href="https://github.com/mythmgn">
+            <span class="icon">
+              <svg viewBox="0 0 16 16">
+                <path fill="#aaa" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+              </svg>
+            </span>
+            Github
+            <!-- <span>mythmgn</span> -->
+          </a>
+          
+          <span class="point"> · </span>
+
+          <span>Author: mythmgn</span>
+
+          <span class="point"> · </span>
+          <span><a href="http://lixizhi.github.io/">theme liXizhi</a></span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <script type="text/javascript">
+    function OnClickNewPost()
+    {
+        var title = prompt("Please enter title of your post");
+        if (title!=null){
+            title = title.replace(" ", "-");
+            var currentdate = new Date();
+            var urlNewPage = "?filename=_posts/" 
+                + currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + currentdate.getDate() + "-" + title + ".md";
+                
+            var defaultText =  [
+                '---',
+                'layout: post',
+                'comments: true',
+                'categories: diary',
+                '---',
+                '## Title',
+                'text'
+                ].join('\n');
+            urlNewPage += "&value=" + encodeURIComponent(defaultText);
+            window.open(urlNewPage);
+        }
+    }
+    
+    $(function() {
+      // CreateNewPostLinks
+      $('.newpost').each(function(){
+          $(this).click(OnClickNewPost);
+      });
+    });
+</script>
+  
+  </body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>[知识积累]Python踩坑之旅其二裸用os.sytem的原罪</title>
+	<meta name="description" content="">
+	
+	<link rel="canonical" href="http://localhost:4000/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/Python-%E8%B8%A9%E5%9D%91%E4%B9%8B%E6%97%85%E5%85%B6%E4%BA%8C%E8%A3%B8%E7%94%A8%E7%B1%BBos.system%E5%87%BD%E6%95%B0%E7%9A%84%E5%8E%9F%E7%BD%AA/">
+	<link rel="alternate" type="application/rss+xml" title="程序员的梦呓指南" href="http://localhost:4000/feed.xml" />
+	
+	<!-- <link rel="stylesheet" href="/css/main.css"> -->
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/monokai_sublime.min.css">
+	<script type="text/javascript" src="/static/js/highlight.min.js"></script>
+
+    <!--
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css">
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/highlight.js/8.4/styles/monokai_sublime.min.css">
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/highlight.js/8.4/highlight.min.js"></script>
+    -->
+    
+	<script type="text/javascript" src="/static/js/index.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+ <!--  <body data-spy="scroll" data-target="#myAffix"> -->
+  <body>
+
+    <header>
+
+<!-- navbar -->
+  <nav class="navbar navbar-inverse">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">程序员的梦呓指南</a>
+      <p class="navbar-text"></p>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+
+        
+          <li>
+        
+        <a href="/">Home</a></li>
+
+        
+          
+            
+              <li>
+            
+            <a href="/about/"><span class="glyphicon "></span> 个人简介</a></li>
+          
+        
+          
+            
+              <li>
+            
+            <a href="/about/"><span class="glyphicon "></span> 读书痕迹</a></li>
+          
+        
+          
+        
+          
+        
+          
+            
+              <li>
+            
+            <a href="/"><span class="glyphicon "></span> 欢迎来到慎见慎思</a></li>
+          
+        
+          
+        
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+</header>
+
+    <div id="main" class="container main">
+      <div class="row">
+  <div id="content" class="col-sm-3">
+    <!-- <div id="myAffix" class="shadow-bottom-center hidden-xs" data-spy="affix" data-offset-top="0" data-offset-bottom="-20"> -->
+    <div id="myAffix" class="shadow-bottom-center hidden-xs" >
+      <div class="categories-list-header">
+        Content
+      </div>
+      <div class="content-text"></div>
+    </div>
+  </div>
+
+  <div id="myArticle" class="col-sm-9">
+    <div class="post-area post">
+      <header>
+        <h1>[知识积累]Python踩坑之旅其二裸用os.sytem的原罪</h1>
+        <p>May 10, 2019</p>
+      </header>
+      <hr>
+      <article>
+        <ul id="markdown-toc">
+  <li><a href="#python-踩坑之旅其一杀不死的-shell-子进程" id="markdown-toc-python-踩坑之旅其一杀不死的-shell-子进程">Python 踩坑之旅其一杀不死的 Shell 子进程</a>    <ul>
+      <li><a href="#踩坑案例" id="markdown-toc-踩坑案例">踩坑案例</a></li>
+      <li><a href="#填坑解法" id="markdown-toc-填坑解法">填坑解法</a></li>
+      <li><a href="#坑位分析" id="markdown-toc-坑位分析">坑位分析</a></li>
+      <li><a href="#技术关键字" id="markdown-toc-技术关键字">技术关键字</a></li>
+      <li><a href="#填坑总结" id="markdown-toc-填坑总结">填坑总结</a></li>
+    </ul>
+  </li>
+  <li><a href="#前坑回顾" id="markdown-toc-前坑回顾">前坑回顾</a>    <ul>
+      <li><a href="#linux中-子进程拷贝父进程哪些信息" id="markdown-toc-linux中-子进程拷贝父进程哪些信息">Linux中, 子进程拷贝父进程哪些信息</a></li>
+      <li><a href="#agent常驻进程选择60000端口的意义" id="markdown-toc-agent常驻进程选择60000端口的意义">Agent常驻进程选择&gt;60000端口的意义</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="python-踩坑之旅其一杀不死的-shell-子进程">Python 踩坑之旅其一杀不死的 Shell 子进程</h1>
+
+<h2 id="踩坑案例">踩坑案例</h2>
+
+<p>今天的坑不仅包括裸用os.system还包括裸用相关的家族:</p>
+
+<ul>
+  <li>os.popen</li>
+  <li>subprocess家族
+    <ul>
+      <li>subprocess.call</li>
+      <li>subprocess.Popen</li>
+      <li>subprocess.run</li>
+    </ul>
+  </li>
+  <li>commands家族 (py2.6后已不推荐使用， depreciated. Py3删除)
+    <ul>
+      <li>commands.getstatusoutput</li>
+    </ul>
+  </li>
+</ul>
+
+<p>这些坑是新同学非常容易踩，而且 code review 过程中容易漏掉:</p>
+
+<p><strong>[1] 长期运行 Service 中裸用以函数家族</strong></p>
+
+<ul>
+  <li>裸用以上 shell 执行家族可能出现script 执行 hang 住进而 hang 住逻辑执行线程，长时间积累进而占满所有执行线程而服务宕机情况</li>
+  <li>大内存消耗 service fork 子进程直接执行 script
+    <ul>
+      <li>如果该 script hang 住</li>
+      <li>并且原进程内存进行频繁修改（或者堆积修改， 虽然有 Copy-On-Write技术），但由于内存巨大，依然有内存风险</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>[2] 自动化测试中裸用以上函数家族而不加以保护</strong></p>
+
+<ul>
+  <li>单个 case 如果执行 script 脚本 hang 住会导致 hang 掉整个case 集</li>
+  <li>不设计 case 超时机制导致case 集合运行时间不可控</li>
+</ul>
+
+<h2 id="填坑解法">填坑解法</h2>
+
+<ol>
+  <li>支持超时 kill 策略，禁止任何情况下的 shell 执行裸用家族函数</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">shell</span>
+        <span class="n">shellexec</span> <span class="o">=</span> <span class="n">shell</span><span class="p">.</span><span class="n">ShellExec</span><span class="p">()</span>
+        <span class="c1"># timeout=None will block the execution until it finishes
+</span>        <span class="n">shellexec</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="s">'/bin/ls'</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="c1"># timeout&gt;=0 will open non-blocking mode
+</span>        <span class="c1"># The process will be killed if the cmd timeouts
+</span>        <span class="n">shellexec</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="o">=</span><span class="s">'/bin/ls'</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>实现代码关键:</p>
+
+<ul>
+  <li>启动新的线程执行， 而不是在 main thread 执行</li>
+  <li>强制超时机制支持， 一旦超时启动 terminate 或者 kill 策略</li>
+</ul>
+
+<p>实现示例可以参考 ShellExec类的run函数:</p>
+
+<ul>
+  <li>https://github.com/baidu/CUP/blob/master/cup/shell/oper.py</li>
+  <li>
+    <p>截取部分关键代码如下：</p>
+
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_pipe_asshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+          <span class="s">"""
+          run shell with subprocess.Popen
+          """</span>
+          <span class="n">tempscript</span> <span class="o">=</span> <span class="n">tempfile</span><span class="p">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
+
+              <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">_tmpdir</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">_tmpprefix</span><span class="p">,</span>
+              <span class="n">delete</span><span class="o">=</span><span class="bp">True</span>
+          <span class="p">)</span>
+          <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tempscript</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="s">'w+b'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
+              <span class="n">fhandle</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">'cd {0};</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">getcwd</span><span class="p">()))</span>
+              <span class="n">fhandle</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+          <span class="n">shexe</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">which</span><span class="p">(</span><span class="s">'sh'</span><span class="p">)</span>
+          <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">shexe</span><span class="p">,</span> <span class="n">tempscript</span><span class="p">.</span><span class="n">name</span><span class="p">]</span>
+          <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span>
+              <span class="s">'cup shell execute {0} with script {1}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span>
+                  <span class="n">cmd</span><span class="p">,</span> <span class="n">cmds</span><span class="p">)</span>
+          <span class="p">)</span>
+          <span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span> <span class="o">=</span> <span class="n">subprocess</span><span class="p">.</span><span class="n">Popen</span><span class="p">(</span>
+              <span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="p">.</span><span class="n">PIPE</span><span class="p">,</span>
+              <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="p">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">preexec_fn</span><span class="o">=</span><span class="n">_signal_handle</span>
+          <span class="p">)</span>
+          <span class="bp">self</span><span class="p">.</span><span class="n">_subpro_data</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span><span class="p">.</span><span class="n">communicate</span><span class="p">()</span>
+      <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s">'stdout'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+          <span class="s">'stderr'</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+          <span class="s">'returncode'</span><span class="p">:</span> <span class="mi">0</span>
+      <span class="p">}</span>
+      <span class="n">cmdthd</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span>
+          <span class="n">target</span><span class="o">=</span><span class="n">_pipe_asshell</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="p">)</span>
+      <span class="p">)</span>
+      <span class="n">cmdthd</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+      <span class="n">cmdthd</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">cmdthd</span><span class="p">.</span><span class="n">isAlive</span><span class="p">():</span>
+          <span class="n">str_warn</span> <span class="o">=</span> <span class="p">(</span>
+              <span class="s">'Shell "%s"execution timout:%d. Killed it'</span> <span class="o">%</span> <span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+          <span class="p">)</span>
+          <span class="n">warnings</span><span class="p">.</span><span class="n">warn</span><span class="p">(</span><span class="n">str_warn</span><span class="p">,</span> <span class="nb">RuntimeWarning</span><span class="p">)</span>
+          <span class="n">parent</span> <span class="o">=</span> <span class="n">linux</span><span class="p">.</span><span class="n">Process</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span><span class="p">.</span><span class="n">pid</span><span class="p">)</span>
+          <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">.</span><span class="n">children</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+              <span class="n">os</span><span class="p">.</span><span class="n">kill</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">signal</span><span class="p">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+          <span class="n">ret</span><span class="p">[</span><span class="s">'returncode'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">999</span>
+          <span class="n">ret</span><span class="p">[</span><span class="s">'stderr'</span><span class="p">]</span> <span class="o">=</span> <span class="n">str_warn</span>
+          <span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span><span class="p">.</span><span class="n">terminate</span><span class="p">()</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span><span class="p">.</span><span class="n">wait</span><span class="p">()</span>
+          <span class="n">times</span> <span class="o">=</span> <span class="mi">0</span>
+          <span class="k">while</span> <span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span><span class="p">.</span><span class="n">returncode</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">times</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+              <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+              <span class="n">times</span> <span class="o">+=</span> <span class="mi">1</span>
+          <span class="n">ret</span><span class="p">[</span><span class="s">'returncode'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">_subpro</span><span class="p">.</span><span class="n">returncode</span>
+          <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">_subpro_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">,</span> \
+              <span class="s">'self._subpro_data should be a tuple'</span>
+          <span class="n">ret</span><span class="p">[</span><span class="s">'stdout'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">_subpro_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+          <span class="n">ret</span><span class="p">[</span><span class="s">'stderr'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">_subpro_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="k">return</span> <span class="n">ret</span>
+
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<ol>
+  <li>内存消耗型服务/进程， 长期运行服务进程避免fork 进程执行 shell 命令</li>
+</ol>
+
+<ul>
+  <li>分离相应的脚本执行单元到其他附属服务</li>
+  <li>若不分离，让该长期运行进程保持低内存消耗设计</li>
+</ul>
+
+<h2 id="坑位分析">坑位分析</h2>
+
+<p>建议看下第二章节关于进程和子进程继承类信息，script使用上述家族进行执行时，采用了启动一个子进程的方式</p>
+
+<h2 id="技术关键字">技术关键字</h2>
+
+<ul>
+  <li>os.system家族</li>
+  <li>subprocess家族</li>
+</ul>
+
+<h2 id="填坑总结">填坑总结</h2>
+
+<p>Shell执行是个非常常见的操作，所以很多同学特别是新同学，在使用过程中经常不注意而随意使用。 裸用一时爽，进程死亡火葬场</p>
+
+<h1 id="前坑回顾">前坑回顾</h1>
+
+<h2 id="linux中-子进程拷贝父进程哪些信息">Linux中, 子进程拷贝父进程哪些信息</h2>
+
+<ul>
+  <li>先说与父进程不同的
+    <ul>
+      <li>pid, ppid</li>
+      <li>memory locks</li>
+      <li>tms_utime、tms_stime、tms_cutime、tms_ustime</li>
+      <li>pending signals</li>
+      <li><a href="https://stackoverflow.com/questions/34452654/what-child-does-not-inherit-semaphore-adjustments-from-its-parent-semop2-mea">semaphore adjustments</a></li>
+      <li>file lock</li>
+      <li>pending alarms</li>
+    </ul>
+  </li>
+</ul>
+
+<p>参考资料来源:</p>
+
+<ul>
+  <li>Linux Programmer’s Manual ( <code class="language-plaintext highlighter-rouge">man fork</code> )
+    <ul>
+      <li>CentOS release 6.3 (Final)</li>
+      <li>Linux Kernel 2.6.32</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+fork<span class="o">()</span>  creates a new process by duplicating the calling process.  The new process, referred to as the child, is an exact duplicate of the calling process, referred to as the parent, except <span class="k">for </span>the follow-
+ing points:
+
+    <span class="k">*</span>  The child has its own unique process ID, and this PID does not match the ID of any existing process group <span class="o">(</span>setpgid<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The child<span class="s1">'s parent process ID is the same as the parent'</span>s process ID.
+
+    <span class="k">*</span>  The child does not inherit its parent<span class="s1">'s memory locks (mlock(2), mlockall(2)).
+
+    *  Process resource utilizations (getrusage(2)) and CPU time counters (times(2)) are reset to zero in the child.
+
+    *  The child'</span>s <span class="nb">set </span>of pending signals is initially empty <span class="o">(</span>sigpending<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The child does not inherit semaphore adjustments from its parent <span class="o">(</span>semop<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The child does not inherit record locks from its parent <span class="o">(</span>fcntl<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The child does not inherit timers from its parent <span class="o">(</span>setitimer<span class="o">(</span>2<span class="o">)</span>, alarm<span class="o">(</span>2<span class="o">)</span>, timer_create<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The child does not inherit outstanding asynchronous I/O operations from its parent <span class="o">(</span>aio_read<span class="o">(</span>3<span class="o">)</span>, aio_write<span class="o">(</span>3<span class="o">))</span>, nor does it inherit any asynchronous I/O contexts from its parent <span class="o">(</span>seeio_setup<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+       The process attributes <span class="k">in </span>the preceding list are all specified <span class="k">in </span>POSIX.1-2001.  The parent and child also differ with respect to the following Linux-specific process attributes:
+
+    <span class="k">*</span>  The child does not inherit directory change notifications <span class="o">(</span>dnotify<span class="o">)</span> from its parent <span class="o">(</span>see the description of F_NOTIFY <span class="k">in </span>fcntl<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The prctl<span class="o">(</span>2<span class="o">)</span> PR_SET_PDEATHSIG setting is reset so that the child does not receive a signal when its parent terminates.
+
+    <span class="k">*</span>  Memory mappings that have been marked with the madvise<span class="o">(</span>2<span class="o">)</span> MADV_DONTFORK flag are not inherited across a fork<span class="o">()</span><span class="nb">.</span>
+
+    <span class="k">*</span>  The termination signal of the child is always SIGCHLD <span class="o">(</span>see clone<span class="o">(</span>2<span class="o">))</span><span class="nb">.</span>
+
+</code></pre></div></div>
+
+<p>在说继承、拷贝父进程的</p>
+
+<ul>
+  <li>包括
+    <ul>
+      <li>内部数据空间</li>
+      <li>堆栈</li>
+      <li>用户 ID、组 ID、eid 有效用户 id、有效组 id、用户 id 标志和设置组 id 标志</li>
+      <li>进程组 id</li>
+      <li>会话 id</li>
+      <li>终端</li>
+      <li>当前目录、根目录</li>
+      <li>文件模式屏蔽字</li>
+      <li>信号屏蔽设置</li>
+      <li>打开文件描述符</li>
+      <li>环境</li>
+      <li>共享存储段</li>
+      <li>存储映射</li>
+      <li>资源限制</li>
+    </ul>
+  </li>
+</ul>
+
+<p>此外</p>
+
+<ul>
+  <li>在父进程创建 (fork) 出一个子进程过程中, 为了加速, 会使用叫做 copy-on-write 的技术. 
+	- 这项技术在存储软件领域也经常使用
+	- <a href="https://unix.stackexchange.com/questions/58145/how-does-copy-on-write-in-fork-handle-multiple-fork">附上一个关于它的讨论，点击查看</a></li>
+</ul>
+
+<h2 id="agent常驻进程选择60000端口的意义">Agent常驻进程选择&gt;60000端口的意义</h2>
+
+<p>在 Linux 系统中， 一般系统会自动替程序选择端口连接到用户指定的目的端口， 而这个端口范围是提前设定好的， 比如作者的 centos：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> /proc/sys/net/ipv4/ip_local_port_range
+10000   60000
+</code></pre></div></div>
+
+<ul>
+  <li>选择 60000 以上的端口可以避免冲突</li>
+  <li><a href="https://www.cnblogs.com/solohac/p/4154180.html">附上一篇讨论该ip_local_port_range的文章，欢迎查看</a></li>
+</ul>
+
+      </article>
+      <hr>
+     <div class="wechat-public"> 
+        首发公众号: <img alt="微信扫一扫关注公众号" src="/static/img/wechat-gongzhonghao.png"/>
+    </div>
+
+      <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a></div>
+      <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"32"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+     </div>
+
+    </div>
+	
+
+<section id="comments">
+<!--PC版-->
+<div id="SOHUCS" sid="[知识积累]Python踩坑之旅其二裸用os.sytem的原罪"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+    appid: 'cytRgXjHX',
+    conf: 'prod_eabb8896915516ba5e00e2bf72b3615f'
+});
+
+document.getElementById(“pop_ad").style.display="none";
+</script>
+</section>
+
+    
+
+</div>
+
+    </div>
+
+    <div id="top" data-toggle="tooltip" data-placement="left" title="back to top">
+      <a href="#">
+        <div class="arrow"></div>
+        <div class="stick"></div>
+      </a>
+    </div>
+    <script>
+    var amountScrolled = 300;
+
+    $(window).scroll(function() {
+            if ( $(window).scrollTop() > amountScrolled ) {
+            $('a.arrow').fadeIn('slow');
+            } else {
+            $('a.arrow').fadeOut('slow');
+            }
+            });
+
+    $('a.arrow').click(function() {
+            $('html, body').animate({
+    scrollTop: 0
+    }, 700);
+    return false;
+        });
+</script>
+
+    <footer class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+          <span><a href="/feed.xml">RSS</a></span>
+          <span class="point"> · </span>
+
+        <a href="mailto:mythmgn at gmail.com"><span class="glyphicon glyphicon-envelope"></span> mythmgn at gmail.com</a>
+        <span class="point"> · </span>
+        
+          <a href="https://github.com/mythmgn">
+            <span class="icon">
+              <svg viewBox="0 0 16 16">
+                <path fill="#aaa" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+              </svg>
+            </span>
+            Github
+            <!-- <span>mythmgn</span> -->
+          </a>
+          
+          <span class="point"> · </span>
+
+          <span>Author: mythmgn</span>
+
+          <span class="point"> · </span>
+          <span><a href="http://lixizhi.github.io/">theme liXizhi</a></span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <script type="text/javascript">
+    function OnClickNewPost()
+    {
+        var title = prompt("Please enter title of your post");
+        if (title!=null){
+            title = title.replace(" ", "-");
+            var currentdate = new Date();
+            var urlNewPage = "?filename=_posts/" 
+                + currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + currentdate.getDate() + "-" + title + ".md";
+                
+            var defaultText =  [
+                '---',
+                'layout: post',
+                'comments: true',
+                'categories: diary',
+                '---',
+                '## Title',
+                'text'
+                ].join('\n');
+            urlNewPage += "&value=" + encodeURIComponent(defaultText);
+            window.open(urlNewPage);
+        }
+    }
+    
+    $(function() {
+      // CreateNewPostLinks
+      $('.newpost').each(function(){
+          $(this).click(OnClickNewPost);
+      });
+    });
+</script>
+  
+  </body>
+</html>
