@@ -33,6 +33,6 @@ gem 'jekyll-toc'
 
 # for security issues
 gem "addressable", ">= 2.8.0"
-gem "nokogiri", ">= 1.11.4"
+gem "nokogiri", ">= 1.12.5"
 gem "kramdown", ">= 2.3.1"
 
